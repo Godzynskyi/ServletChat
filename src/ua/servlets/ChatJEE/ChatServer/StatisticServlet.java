@@ -7,17 +7,14 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
- * Created by Java Developer on 01.09.2015.
+ * Created by Java Developer on 02.09.2015.
  */
-public class LoginServlet extends HttpServlet {
-
-
+public class StatisticServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String login = req.getParameter("login");
-        String result = SessionList.getInstance().addLogin(login);
-        if(result!="-1") UserStatistic.addUser(result);
-
-        resp.getWriter().write(result);
+        String id = req.getParameter("id");
+        String respSTR;
+        if(id==null) respSTR=UserStatistic.getStatistic(); else respSTR=UserStatistic.getStatistic(id);
+        resp.getWriter().write(respSTR);
     }
 }

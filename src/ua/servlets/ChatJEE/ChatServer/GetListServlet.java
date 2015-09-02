@@ -8,8 +8,6 @@ import java.io.OutputStream;
 
 public class GetListServlet extends HttpServlet {
 	
-	private MessageList msgList = MessageList.getInstance();
-	
 	public void doGet(HttpServletRequest req, HttpServletResponse resp)
 		throws IOException 
 	{
@@ -17,14 +15,10 @@ public class GetListServlet extends HttpServlet {
 		String fromStr = req.getParameter("from");
 		int from = Integer.parseInt(fromStr);
 		String idStr = req.getParameter("id");
-		String json;
-		if(idStr==null) {
-			json = msgList.toJSON(from);
-		} else {
-			int id = Integer.parseInt(idStr);
-			OnlineList.getInstance().wasActive(idStr);
-			json = msgList.toJSON(from, id);
-		}
+		int id = Integer.parseInt(idStr);
+		MessageList msgList = RoomList.getRoomOfUser(idStr);
+		OnlineList.getInstance().wasActive(idStr);
+		String json = msgList.toJSON(from, id);
 
 
 		if (json != null) {

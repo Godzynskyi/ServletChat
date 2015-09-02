@@ -10,20 +10,18 @@ import java.util.Date;
 
 public class AddServlet extends HttpServlet {
 
-	private MessageList msgList = MessageList.getInstance();
-
-	@Override
-	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		String from = req.getParameter("from");
-		String text = req.getParameter("text");
-		Message message = new Message();
-		message.setFrom(from);
-		message.setDate(new Date());
-		message.setText(text);
-		msgList.add(message);
-
-		resp.getWriter().write("OK");
-	}
+//	@Override
+//	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+//		String from = req.getParameter("from");
+//		String text = req.getParameter("text");
+//		Message message = new Message();
+//		message.setFrom(from);
+//		message.setDate(new Date());
+//		message.setText(text);
+//		msgList.add(message);
+//
+//		resp.getWriter().write("OK");
+//	}
 
 	public void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws IOException 
@@ -32,11 +30,16 @@ public class AddServlet extends HttpServlet {
 		InputStream is = req.getInputStream();
 		byte[] buf = new byte[is.available()];
 		is.read(buf);
-		
+
+
 		Message msg = Message.fromJSON(new String(buf));
-		if (msg != null)
+		if (msg != null) {
+			MessageList msgList = RoomList.getRoomOfUser(msg.getFrom());
+			UserStatistic.userSentMessage(msg.getFrom(),msg);
+			msg.setFrom(SessionList.getInstance().getLoginByID(msg.getFrom()));
 			msgList.add(msg);
-		else
+		} else {
 			resp.setStatus(400); // Bad request
+		}
 	}
 }

@@ -8,14 +8,8 @@ import java.util.List;
 
 public class MessageList {
 	
-	private static final MessageList msgList = new MessageList();
-
 	private final List<Message> list = new ArrayList<Message>();
-	
-	public static MessageList getInstance() {
-		return msgList;
-	}
-	
+
 	public synchronized void add(Message m) {
 		if("".equals(m.getFrom())) return;
 		list.add(m);

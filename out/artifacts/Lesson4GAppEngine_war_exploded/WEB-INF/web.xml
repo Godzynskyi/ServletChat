@@ -39,6 +39,24 @@
         <url-pattern>/getonline</url-pattern>
     </servlet-mapping>
 
+    <servlet>
+        <servlet-name>EnterRoom</servlet-name>
+        <servlet-class>ua.servlets.ChatJEE.ChatServer.EnterRoomServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>EnterRoom</servlet-name>
+        <url-pattern>/enterroom</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>Statistic</servlet-name>
+        <servlet-class>ua.servlets.ChatJEE.ChatServer.StatisticServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>Statistic</servlet-name>
+        <url-pattern>/status</url-pattern>
+    </servlet-mapping>
+    
     <welcome-file-list>
         <welcome-file>index.html</welcome-file>
     </welcome-file-list>

@@ -14,6 +14,11 @@ class GetThread extends Thread {
 	public GetThread(int sessionId) {
 		this.sessionId = sessionId;
 	}
+
+	public void changeN(int n) {
+		this.n = n;
+	}
+
 	private int n;
 	private final int sessionId;
 
@@ -62,6 +67,7 @@ public class Main {
 				login = scanner.nextLine();
 				sessionId = getSessionID(login);
 			} while (sessionId<0);
+			enterRoom(String.valueOf(sessionId),"ROOT");
 
 
 			GetThread th = new GetThread(sessionId);
@@ -81,6 +87,12 @@ public class Main {
 					if (text.isEmpty())	break;
 				}
 
+				if(text.toLowerCase().startsWith("enter ")) {
+					enterRoom(String.valueOf(sessionId),text.substring(6));
+					th.changeN(0);
+					text = scanner.nextLine();
+					if (text.isEmpty())	break;
+				}
 				m.setText(text);
 				m.setFrom(String.valueOf(sessionId));
 
@@ -100,6 +112,16 @@ public class Main {
 		} finally {
 			scanner.close();
 		}
+	}
+
+	private static void enterRoom(String id, String room) throws IOException {
+		URL url = new URL("http://localhost:8888/enterroom?id=" + id + "&room=" + room);
+		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+
+		conn.setRequestMethod("GET");
+//		conn.setDoInput(false);
+
+		conn.getInputStream();
 	}
 
 	private static int getSessionID(String login) throws IOException {

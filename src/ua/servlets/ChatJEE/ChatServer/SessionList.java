@@ -33,6 +33,7 @@ public class SessionList {
         Integer id = login.hashCode();
         String sessionId = id.toString();
         map.put(sessionId, login);
+        RoomList.enterRoom(sessionId,"ROOT");
 
         return sessionId;
     }

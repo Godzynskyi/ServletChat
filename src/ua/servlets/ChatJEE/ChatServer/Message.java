@@ -26,7 +26,7 @@ public class Message implements Serializable {
 	public static Message fromJSON(String s) {
 		Gson gson = new GsonBuilder().create();
 		Message mes = gson.fromJson(s, Message.class);
-		mes.setFrom(SessionList.getInstance().getLoginByID(mes.getFrom()));
+//		mes.setFrom(SessionList.getInstance().getLoginByID(mes.getFrom()));
 		return mes;
 	}
 	
