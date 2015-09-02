@@ -4,15 +4,21 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import ua.servlets.ChatJEE.ChatServer.SessionList;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.Serializable;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Date;
 
+@XmlRootElement
 public class Message implements Serializable {
 	private static final long serialVersionUID = 1L;
+
 
 	private Date date = new Date();
 	private String from;
@@ -28,7 +34,23 @@ public class Message implements Serializable {
 		Gson gson = new GsonBuilder().create();
 		return gson.fromJson(s, Message.class);
 	}
-	
+
+	public String toXML() throws JAXBException {
+		JAXBContext context = JAXBContext.newInstance(this.getClass());
+		Marshaller marshaller = context.createMarshaller();
+		marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+		OutputStream os = new ByteArrayOutputStream();
+		marshaller.marshal(this, os);
+		return os.toString();
+	}
+
+	public static Message fromXML(String s) throws JAXBException {
+		JAXBContext context = JAXBContext.newInstance(Message.class);
+		Unmarshaller unmarshaller = context.createUnmarshaller();
+		InputStream inputStream = new ByteArrayInputStream(s.getBytes());
+		return (Message) unmarshaller.unmarshal(inputStream);
+	}
+
 	@Override
 	public String toString() {
 		return new StringBuilder().append("[").append(date.toString())
@@ -45,15 +67,19 @@ public class Message implements Serializable {
 
 		OutputStream os = conn.getOutputStream();
 		try {
-			String json = toJSON();
+			String json = toXML();
 			os.write(json.getBytes());
 			
 			return conn.getResponseCode();
+		} catch (JAXBException e) {
+			e.printStackTrace();
 		} finally {
 			os.close();
 		}
+		return 0;
 	}
-	
+
+	@XmlElement
 	public Date getDate() {
 		return date;
 	}
@@ -62,6 +88,7 @@ public class Message implements Serializable {
 		this.date = date;
 	}
 
+	@XmlElement
 	public String getFrom() {
 		return from;
 	}
@@ -70,6 +97,7 @@ public class Message implements Serializable {
 		this.from = from;
 	}
 
+	@XmlElement
 	public String getTo() {
 		return to;
 	}
@@ -78,6 +106,7 @@ public class Message implements Serializable {
 		this.to = to;
 	}
 
+	@XmlElement
 	public String getText() {
 		return text;
 	}

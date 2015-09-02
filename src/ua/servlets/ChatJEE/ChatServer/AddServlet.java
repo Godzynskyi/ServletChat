@@ -4,6 +4,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.xml.bind.JAXBException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
@@ -32,7 +33,12 @@ public class AddServlet extends HttpServlet {
 		is.read(buf);
 
 
-		Message msg = Message.fromJSON(new String(buf));
+		Message msg = null;
+		try {
+			msg = Message.fromXML(new String(buf));
+		} catch (JAXBException e) {
+			e.printStackTrace();
+		}
 		if (msg != null) {
 			MessageList msgList = RoomList.getRoomOfUser(msg.getFrom());
 			UserStatistic.userSentMessage(msg.getFrom(),msg);
